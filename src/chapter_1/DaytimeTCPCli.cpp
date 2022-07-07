@@ -5,48 +5,36 @@ Daytime client specifically works with IPV4.
 */
 #include "unp.h"
 
+using namespace unp;
 int main( int argc, char **argv ) {
-    int sockfd, n;
-    char recvline[MAXLINE + 1] = {0};
+    int socketfd, n;
+    char recvline[MAXLINE + 1];
+    sockaddr_in servaddr;
 
-    struct sockaddr_in servaddr;
+    if (argc != 2)
+        ErrorQuit("usage: a.out <IPaddress>");
 
-    if ( argc != 2 ) {
-        unp::ErrorQuit( "Usage: ch1_daytimetcpcli <IPAddress>" ); 
-    }
+    if ((socketfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+        ErrorSys("socket error");
 
-    if ( (sockfd = socket( AF_INET, SOCK_STREAM, 0 )) < 0 ) {
-        unp::ErrorSys( "Socket error" );
-    }
-
-#ifdef HAVE_STRINGS_H
-    bzero( &servaddr, sizeof( servaddr ) );
-#else
-    memset( &servaddr, 0, sizeof( servaddr ) );
-#endif
-
+    bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
-    servaddr.sin_port = htons(13);      // need to convert to network byte order
-                                        // network byte order is always in big-endian
-    if ( inet_pton(AF_INET, argv[1], &servaddr.sin_addr) <= 0 ) {
-        unp::ErrorQuit( "inet_pton error for %s", argv[1]);
+    servaddr.sin_port = htons(13); // todo question?
+    if (inet_pton(AF_INET, argv[1], &servaddr.sin_addr) <= 0) // present to numeric -> convert ip address to number format
+        ErrorQuit("inet_pton error for %s", argv[1]);
+
+    if (connect(socketfd, (SA *) &servaddr, sizeof(servaddr)) < 0) // todo remove unnecessary?
+        ErrorSys("connect error");
+
+    while ( (n = read(socketfd, recvline, MAXLINE)) > 0)
+    {
+        recvline[n] = 0;
+        if (fputs(recvline, stdout) == EOF)
+            ErrorSys("fputs error");
     }
 
-    if ( connect( sockfd, (const SA *)&servaddr, sizeof( servaddr ) ) == -1 ) {
-        unp::ErrorSys( "Connect error" );
-    }
-
-    while ( (n = read( sockfd, recvline, MAXLINE )) > 0 ) {
-        recvline[n] = 0;                // set null-terminated to read line
-
-        if ( std::fputs( recvline, stdout ) == EOF ) {
-            unp::ErrorSys( "fputs error" );
-        }
-    }
-
-    if ( n < 0 ) {
-        unp::ErrorSys( "read error" );
-    }
+    if (n < 0)
+        ErrorSys("read error");
 
     return 0;
 }
