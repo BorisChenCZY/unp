@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project (UNP)
 
 # set cmake flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")        # manually set compile flag as cmake made
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")        # manually set compile flag as cmake made
                                                             # a wrong guess of which one we want to use
                                                             # for CMAKE_CXX_STANDARD 11, it use -std=gnu++11
 set(CMAKE_CXX_COMPILER /usr/bin/g++)                        # force to use g++, by default as tested on Linux

@@ -9,7 +9,7 @@ using namespace unp;
 int main( int argc, char **argv ) {
     int socketfd, n;
     char recvline[MAXLINE + 1];
-    sockaddr_in servaddr;
+    sockaddr_in servaddr{};
 
     if (argc != 2)
         ErrorQuit("usage: a.out <IPaddress>");
@@ -23,7 +23,7 @@ int main( int argc, char **argv ) {
     if (inet_pton(AF_INET, argv[1], &servaddr.sin_addr) <= 0) // present to numeric -> convert ip address to number format
         ErrorQuit("inet_pton error for %s", argv[1]);
 
-    if (connect(socketfd, (SA *) &servaddr, sizeof(servaddr)) < 0) // todo remove unnecessary?
+    if (connect(socketfd, reinterpret_cast<SA*>(&servaddr), sizeof(servaddr)) < 0)
         ErrorSys("connect error");
 
     while ( (n = read(socketfd, recvline, MAXLINE)) > 0)
