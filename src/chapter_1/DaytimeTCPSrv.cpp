@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
     servaddr.sin_port = htons(13);
 
     Bind(listenfd, reinterpret_cast<SA*>(&servaddr), sizeof(servaddr));
-    Listen(listenfd, LISTENQ); // backlog ?
+    Listen(listenfd, LISTENQ); // backlog
 
     while (true) {
         connfd = Accept(listenfd, reinterpret_cast<SA*>(NULL), NULL);

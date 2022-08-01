@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+
 project (UNP)
 
 # set cmake flags
@@ -21,11 +21,6 @@ cmake_host_system_information(RESULT CPU_NAME_ QUERY PROCESSOR_NAME)
 cmake_host_system_information(RESULT OS_NAME_ QUERY OS_NAME)
 
 set(CPU_VENDOR_OS "\"${CPU_NAME_}_${CMAKE_SYSTEM_PROCESSOR}_${OS_NAME_}\"")
-
-# Build options available to be configured
-option(BUILD_CH1_DAYTIMECLI         "Build Chapter 1 - Daytime Client" ON)
-option(BUILD_CH1_DAYTIMETCPCLIV6    "Build Chapter 1 - Daytime Client TCPv6" ON)
-option(BUILD_CH1_DAYTIMETCPSRV      "Build Chapter 1 - Daytime Server" ON)
 
 # check for following cases
 # - header file exists
@@ -285,17 +280,14 @@ set(UNPCOMMON_LIB "unpcommon")
 add_library(${UNPCOMMON_LIB} STATIC "src/lib/Error.cpp")
 
 # Build upon configured build options at the top
-if (BUILD_CH1_DAYTIMECLI)
-    add_executable("ch1_daytimetcpcli" "src/chapter_1/DaytimeTCPCli.cpp")    
-    target_link_libraries("ch1_daytimetcpcli" ${UNPCOMMON_LIB})
-endif()
+add_executable("ch1_daytimetcpcli" "src/chapter_1/DaytimeTCPCli.cpp")    
+target_link_libraries("ch1_daytimetcpcli" ${UNPCOMMON_LIB})
 
-if (BUILD_CH1_DAYTIMETCPCLIV6)
-    add_executable("ch1_daytimetcpcliv6" "src/chapter_1/DaytimeTCPCliv6.cpp")
-    target_link_libraries("ch1_daytimetcpcliv6" ${UNPCOMMON_LIB})
-endif()
+add_executable("ch1_daytimetcpcliv6" "src/chapter_1/DaytimeTCPCliv6.cpp")
+target_link_libraries("ch1_daytimetcpcliv6" ${UNPCOMMON_LIB})
 
-if (BUILD_CH1_DAYTIMETCPSRV)
-    add_executable("ch1_daytimetcpsrv" "src/chapter_1/DaytimeTCPSrv.cpp")
-    target_link_libraries("ch1_daytimetcpsrv" ${UNPCOMMON_LIB})
-endif()
+add_executable("ch1_daytimetcpsrv" "src/chapter_1/DaytimeTCPSrv.cpp")
+target_link_libraries("ch1_daytimetcpsrv" ${UNPCOMMON_LIB})
+
+add_executable("ch3_byteOrder" "src/chapter_3/byte_order.cpp")
+target_link_libraries("ch3_byteOrder" ${UNPCOMMON_LIB})
